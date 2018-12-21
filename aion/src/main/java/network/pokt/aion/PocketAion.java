@@ -3,8 +3,11 @@ package network.pokt.aion;
 import android.content.Context;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import network.pokt.aion.operations.CreateTransactionOperation;
 import network.pokt.aion.operations.CreateWalletOperation;
@@ -99,7 +102,43 @@ public class PocketAion extends PocketPlugin {
 
     @Override
     public @NotNull Query createQuery(@NotNull String subnetwork, Map<String, Object> params, Map<String, Object> decoder) throws CreateQueryException {
-        return null;
+        Query result;
+
+        // Extract rpc request
+        String rpcMethod;
+        List<Object> rpcParams;
+        JSONObject queryData = new JSONObject();
+        try {
+            rpcMethod = (String) params.get("rpcMethod");
+            rpcParams = (List<Object>) params.get("rpcParams");
+            queryData.put("rpc_method", rpcMethod);
+            queryData.put("rpc_params", rpcParams);
+        } catch (Exception e) {
+            throw new CreateQueryException(subnetwork, params, decoder, e.getMessage());
+        }
+
+        // Extract decoder
+        List<String> returnTypes;
+        JSONObject queryDecoder = new JSONObject();
+        try {
+            returnTypes = (List<String>) decoder.get("returnTypes");
+            decoder.put("return_types", returnTypes);
+        } catch (Exception e) {
+            // Log message and send empty decoder
+            Logger.getGlobal().warning(e.getMessage());
+            queryDecoder = new JSONObject();
+        }
+
+        try {
+            result = new Query(this.getNetwork(), subnetwork, queryData, queryDecoder);
+        } catch (Exception e) {
+            throw new CreateQueryException(subnetwork, params, decoder, e.getMessage());
+        }
+
+        if(result == null) {
+            throw new CreateQueryException(subnetwork, params, decoder, "Unknown error creating query");
+        }
+        return result;
     }
 
     @Override

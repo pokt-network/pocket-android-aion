@@ -8,14 +8,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import network.pokt.aion.util.TestConfiguration;
+import network.pokt.pocketsdk.exceptions.CreateQueryException;
 import network.pokt.pocketsdk.exceptions.CreateTransactionException;
 import network.pokt.pocketsdk.exceptions.CreateWalletException;
 import network.pokt.pocketsdk.exceptions.ImportWalletException;
 import network.pokt.pocketsdk.exceptions.InvalidConfigurationException;
+import network.pokt.pocketsdk.models.Query;
 import network.pokt.pocketsdk.models.Transaction;
 import network.pokt.pocketsdk.models.Wallet;
 
@@ -98,6 +101,20 @@ public class PocketAionTest {
             assert(transaction != null);
         } catch (CreateWalletException cwe) {
             throw cwe;
+        }
+    }
+
+    @Test
+    public void testCreateQuery() throws CreateQueryException {
+        try {
+            String[] rpcParams = {"0x0", "latest"};
+            Map<String, Object> params = new HashMap<>();
+            params.put("rpcMethod", "eth_getBalance");
+            params.put("rpcParams", Arrays.asList(rpcParams));
+            Query query = this.pocketAion.createQuery("4", params, null);
+            assert(query != null);
+        } catch (CreateQueryException cqe) {
+            throw cqe;
         }
     }
 }
