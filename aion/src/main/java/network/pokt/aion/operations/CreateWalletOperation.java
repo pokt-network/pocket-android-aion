@@ -1,4 +1,4 @@
-package network.pokt.operations;
+package network.pokt.aion.operations;
 
 import android.content.Context;
 
@@ -10,35 +10,32 @@ import org.liquidplayer.javascript.JSObject;
 import network.pokt.aion.R;
 import network.pokt.pocketsdk.models.Wallet;
 
-public class ImportWalletOperation extends BaseOperation {
+public class CreateWalletOperation extends BaseOperation {
 
-    private String privateKey;
     private String network;
     private String subnetwork;
     private Wallet wallet;
 
-    ImportWalletOperation(Context context) {
+    CreateWalletOperation(Context context) {
         super(context);
     }
 
-    public ImportWalletOperation(Context context, @NotNull String network, @NotNull String subnetwork, @NotNull String privateKey) {
+    public CreateWalletOperation(Context context, @NotNull String network, @NotNull String subnetwork) {
         this(context);
-        this.privateKey = privateKey;
         this.network = network;
         this.subnetwork = subnetwork;
-    }
-
-    public Wallet getWallet() {
-        return this.wallet;
     }
 
     @Override
     void executeOperation(JSContext jsContext) {
         // Run the script to create the wallet in JS
-        jsContext.evaluateScript(String.format(this.readRawTextFile(R.raw.import_wallet), this.privateKey));
-        // Extract the address and private key
+        jsContext.evaluateScript(this.readRawTextFile(R.raw.create_wallet));
         JSObject walletObj = jsContext.property("wallet").toObject();
         this.wallet = OperationUtil.parseWalletObj(walletObj, this.network, this.subnetwork);
+    }
+
+    public Wallet getWallet() {
+        return this.wallet;
     }
 
     @Override

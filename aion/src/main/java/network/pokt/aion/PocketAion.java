@@ -1,4 +1,4 @@
-package network.pokt;
+package network.pokt.aion;
 
 import android.content.Context;
 
@@ -6,8 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-import network.pokt.operations.CreateWalletOperation;
-import network.pokt.operations.ImportWalletOperation;
+import network.pokt.aion.operations.CreateTransactionOperation;
+import network.pokt.aion.operations.CreateWalletOperation;
+import network.pokt.aion.operations.ImportWalletOperation;
 import network.pokt.pocketsdk.exceptions.CreateQueryException;
 import network.pokt.pocketsdk.exceptions.CreateTransactionException;
 import network.pokt.pocketsdk.exceptions.CreateWalletException;
@@ -38,7 +39,8 @@ public class PocketAion extends PocketPlugin {
         CreateWalletOperation operation = new CreateWalletOperation(this.context, this.getNetwork(), subnetwork);
         boolean processExecuted = operation.startProcess();
         if(!processExecuted) {
-            throw new CreateWalletException(data, "Wallet creation process failed");
+            String errorMsg = operation.getErrorMsg() != null ? operation.getErrorMsg() : "Wallet creation process failed";
+            throw new CreateWalletException(data, errorMsg);
         }
         result = operation.getWallet();
         if(result == null) {
@@ -67,7 +69,32 @@ public class PocketAion extends PocketPlugin {
 
     @Override
     public @NotNull Transaction createTransaction(@NotNull Wallet wallet, @NotNull String subnetwork, Map<String, Object> params) throws CreateTransactionException {
-        return null;
+        Transaction result;
+
+        try {
+            String nonce = (String) params.get("nonce");
+            String to = (String) params.get("to");
+            String value = (String) params.get("value");
+            String data = (String) params.get("data");
+            String nrg = (String) params.get("nrg");
+            String nrgPrice = (String) params.get("nrgPrice");
+            CreateTransactionOperation operation = new CreateTransactionOperation(this.context, wallet, nonce, to, value, data, nrg, nrgPrice);
+            boolean processExecuted = operation.startProcess();
+            if(!processExecuted) {
+                String errorMsg = operation.getErrorMsg() != null ? operation.getErrorMsg() : "Error creating transaction";
+                throw new CreateTransactionException(wallet, subnetwork, params, errorMsg);
+            }
+
+            result = operation.getTransaction();
+        } catch (Exception e) {
+            throw new CreateTransactionException(wallet, subnetwork, params, e.getMessage());
+        }
+
+        if(result == null) {
+            throw new CreateTransactionException(wallet, subnetwork, params, "Error creating transaction");
+        }
+
+        return result;
     }
 
     @Override

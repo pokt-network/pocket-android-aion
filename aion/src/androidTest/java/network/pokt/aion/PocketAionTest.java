@@ -8,11 +8,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import network.pokt.PocketAion;
+import java.util.HashMap;
+import java.util.Map;
+
 import network.pokt.aion.util.TestConfiguration;
+import network.pokt.pocketsdk.exceptions.CreateTransactionException;
 import network.pokt.pocketsdk.exceptions.CreateWalletException;
 import network.pokt.pocketsdk.exceptions.ImportWalletException;
 import network.pokt.pocketsdk.exceptions.InvalidConfigurationException;
+import network.pokt.pocketsdk.models.Transaction;
 import network.pokt.pocketsdk.models.Wallet;
 
 import static org.junit.Assert.assertEquals;
@@ -72,6 +76,28 @@ public class PocketAionTest {
             throw cwe;
         } catch (ImportWalletException iwe) {
             throw iwe;
+        }
+    }
+
+    @Test
+    public void testCreateTransaction() throws CreateWalletException, CreateTransactionException {
+        try {
+            Wallet senderWallet = this.pocketAion.createWallet("4", null);
+            assert(senderWallet != null);
+            Wallet receiverWallet = this.pocketAion.createWallet("4", null);
+            assert(receiverWallet != null);
+            // Create transaction params
+            Map<String, Object> txParams = new HashMap<>();
+            txParams.put("nonce", "0x0");
+            txParams.put("to", receiverWallet.getAddress());
+            txParams.put("value", "0x989680");
+            txParams.put("data", null);
+            txParams.put("nrg", "0x989680");
+            txParams.put("nrgPrice", "0x989680");
+            Transaction transaction = this.pocketAion.createTransaction(senderWallet, "4", txParams);
+            assert(transaction != null);
+        } catch (CreateWalletException cwe) {
+            throw cwe;
         }
     }
 }

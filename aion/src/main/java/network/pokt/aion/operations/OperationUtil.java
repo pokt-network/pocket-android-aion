@@ -1,4 +1,4 @@
-package network.pokt.operations;
+package network.pokt.aion.operations;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;

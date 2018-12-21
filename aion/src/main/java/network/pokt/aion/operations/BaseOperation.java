@@ -1,9 +1,10 @@
-package network.pokt.operations;
+package network.pokt.aion.operations;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 
 import org.liquidplayer.javascript.JSContext;
+import org.liquidplayer.javascript.JSException;
 import org.liquidplayer.node.Process;
 import org.liquidplayer.node.Process.EventListener;
 
@@ -12,8 +13,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import network.pokt.aion.R;
 
@@ -22,15 +21,21 @@ abstract class BaseOperation implements JSContext.IJSExceptionHandler, EventList
     private Context context;
     Semaphore semaphore;
     private Process process;
+    String errorMsg;
 
     public BaseOperation(Context context) {
         this.semaphore = new Semaphore(0);
         this.context = context;
     }
 
+    public String getErrorMsg() {
+        return this.errorMsg;
+    }
+
     // Creates the process
     public boolean startProcess() {
         if (process != null) {
+            this.errorMsg = "Operation already executed";
             return false;
         }
         this.process = new Process(
@@ -54,7 +59,7 @@ abstract class BaseOperation implements JSContext.IJSExceptionHandler, EventList
             // Calls execute operation
             this.executeOperation(jsContext);
         } catch (Exception e) {
-            Logger.getGlobal().log(Level.SEVERE, e.getMessage());
+            this.errorMsg = e.getMessage();
         }
     }
 
@@ -66,11 +71,17 @@ abstract class BaseOperation implements JSContext.IJSExceptionHandler, EventList
     @Override
     public void onProcessFailed(Process process, Exception error) {
         this.semaphore.release();
+        this.errorMsg = error.getMessage();
     }
 
     @Override
     public void onProcessAboutToExit(Process process, int exitCode) {
         this.semaphore.release();
+    }
+
+    @Override
+    public void handle(JSException exception) {
+        this.errorMsg = exception.getMessage();
     }
 
     // Gets called by onProcessStart to run custom operation code
