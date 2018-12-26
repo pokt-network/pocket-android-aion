@@ -65,8 +65,8 @@ public class CreateTransactionOperation extends BaseOperation {
                     return;
                 }
 
-                String rawTransaction = result.property("rawTransaction").toString();
                 try {
+                    String rawTransaction = result.property("rawTransaction").toString();
                     opInstance.transaction = new Transaction(wallet.getNetwork(), wallet.getSubnetwork(), rawTransaction, new JSONObject());
                 } catch (JSONException e) {
                     opInstance.transaction = null;
