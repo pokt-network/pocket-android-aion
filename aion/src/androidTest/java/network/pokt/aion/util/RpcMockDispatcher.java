@@ -9,12 +9,14 @@ import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 
-public class EthRpcMockDispatcher extends Dispatcher {
+public class RpcMockDispatcher extends Dispatcher {
 
     private Context context;
+    private int suffixLength;
 
-    public EthRpcMockDispatcher(Context context) {
+    public RpcMockDispatcher(Context context, int suffixLength) {
         this.context = context;
+        this.suffixLength = suffixLength;
     }
 
     private String getRawResponse(String rpcMethod) throws InterruptedException {
@@ -22,7 +24,7 @@ public class EthRpcMockDispatcher extends Dispatcher {
             throw new InterruptedException("Invalid rpc method provided");
         }
 
-        String rawResName = rpcMethod.substring(4, rpcMethod.length()).toLowerCase();
+        String rawResName = rpcMethod.substring(suffixLength, rpcMethod.length()).toLowerCase();
         int resId = context.getResources().getIdentifier(rawResName, "raw", context.getPackageName());
         return RawFileUtil.readRawTextFile(context, resId);
     }

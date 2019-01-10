@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 import network.pokt.aion.rpc.callbacks.RPCCallback;
 import network.pokt.aion.rpc.types.ObjectOrBoolean;
-import network.pokt.aion.util.EthRpcMockDispatcher;
+import network.pokt.aion.util.RpcMockDispatcher;
 import network.pokt.aion.util.TestConfiguration;
 import network.pokt.pocketsdk.exceptions.CreateQueryException;
 import network.pokt.pocketsdk.exceptions.InvalidConfigurationException;
@@ -50,7 +50,7 @@ public class EthRpcTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         try {
-            this.pocketAion = new PocketAion(new TestConfiguration(new EthRpcMockDispatcher(appContext)), appContext);
+            this.pocketAion = new PocketAion(new TestConfiguration(new RpcMockDispatcher(appContext, 4)), appContext);
             assertNotNull(this.pocketAion);
         } catch (InvalidConfigurationException e) {
             throw e;
