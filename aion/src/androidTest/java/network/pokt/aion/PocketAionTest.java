@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import network.pokt.aion.util.PluginMockDispatcher;
 import network.pokt.aion.util.TestConfiguration;
 import network.pokt.pocketsdk.exceptions.CreateQueryException;
 import network.pokt.pocketsdk.exceptions.CreateTransactionException;
@@ -51,7 +52,7 @@ public class PocketAionTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         try {
-            this.pocketAion = new PocketAion(new TestConfiguration(), appContext);
+            this.pocketAion = new PocketAion(new TestConfiguration(new PluginMockDispatcher()), appContext);
             assertTrue(this.pocketAion != null);
         } catch (InvalidConfigurationException e) {
             throw e;
@@ -61,7 +62,7 @@ public class PocketAionTest {
     @Test
     public void testCreateWallet() throws CreateWalletException {
         try {
-            Wallet wallet = this.pocketAion.createWallet("4", null);
+            Wallet wallet = this.pocketAion.createWallet("mastery", null);
             assert(wallet != null);
         } catch (CreateWalletException cwe) {
             throw cwe;
@@ -71,7 +72,7 @@ public class PocketAionTest {
     @Test
     public void testImportWallet() throws ImportWalletException, CreateWalletException {
         try {
-            Wallet wallet = this.pocketAion.createWallet("4", null);
+            Wallet wallet = this.pocketAion.createWallet("mastery", null);
             assert(wallet != null);
             Wallet importedWallet = this.pocketAion.importWallet(wallet.getPrivateKey(), wallet.getSubnetwork(), wallet.getAddress(), null);
             assert(importedWallet != null);
@@ -85,9 +86,9 @@ public class PocketAionTest {
     @Test
     public void testCreateTransaction() throws CreateWalletException, CreateTransactionException {
         try {
-            Wallet senderWallet = this.pocketAion.createWallet("4", null);
+            Wallet senderWallet = this.pocketAion.createWallet("mastery", null);
             assert(senderWallet != null);
-            Wallet receiverWallet = this.pocketAion.createWallet("4", null);
+            Wallet receiverWallet = this.pocketAion.createWallet("mastery", null);
             assert(receiverWallet != null);
             // Create transaction params
             Map<String, Object> txParams = new HashMap<>();
@@ -111,7 +112,7 @@ public class PocketAionTest {
             Map<String, Object> params = new HashMap<>();
             params.put("rpcMethod", "eth_getBalance");
             params.put("rpcParams", Arrays.asList(rpcParams));
-            Query query = this.pocketAion.createQuery("4", params, null);
+            Query query = this.pocketAion.createQuery("mastery", params, null);
             assert(query != null);
         } catch (CreateQueryException cqe) {
             throw cqe;

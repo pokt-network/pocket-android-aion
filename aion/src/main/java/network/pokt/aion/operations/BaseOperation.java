@@ -1,24 +1,20 @@
 package network.pokt.aion.operations;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 
 import org.liquidplayer.javascript.JSContext;
 import org.liquidplayer.javascript.JSException;
 import org.liquidplayer.node.Process;
 import org.liquidplayer.node.Process.EventListener;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.concurrent.Semaphore;
 
 import network.pokt.aion.R;
+import network.pokt.aion.util.RawFileUtil;
 
 abstract class BaseOperation implements JSContext.IJSExceptionHandler, EventListener {
 
-    private Context context;
+    Context context;
     Semaphore semaphore;
     private Process process;
     String errorMsg;
@@ -53,9 +49,9 @@ abstract class BaseOperation implements JSContext.IJSExceptionHandler, EventList
         try {
             // Configures the JS context to run
             jsContext.setExceptionHandler(this);
-            jsContext.evaluateScript(this.readRawTextFile(R.raw.globals));
-            jsContext.evaluateScript(this.readRawTextFile(R.raw.web3_aion));
-            jsContext.evaluateScript(this.readRawTextFile(R.raw.aion_instance));
+            jsContext.evaluateScript(RawFileUtil.readRawTextFile(this.context, R.raw.globals));
+            jsContext.evaluateScript(RawFileUtil.readRawTextFile(this.context, R.raw.web3_aion));
+            jsContext.evaluateScript(RawFileUtil.readRawTextFile(this.context, R.raw.aion_instance));
             // Calls execute operation
             this.executeOperation(jsContext);
         } catch (Exception e) {
@@ -91,24 +87,5 @@ abstract class BaseOperation implements JSContext.IJSExceptionHandler, EventList
     private String getOperationID() {
         int randomId = new Double(Math.random() * ((Integer.MAX_VALUE - 0) + 1) + 0).intValue();
         return String.format("%s-%d", this.getClass().getName(), randomId);
-    }
-
-    @Nullable
-    String readRawTextFile(int resId) {
-        InputStream inputStream = this.context.getResources().openRawResource(resId);
-
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader buffReader = new BufferedReader(inputStreamReader);
-        String line;
-        StringBuilder text = new StringBuilder();
-        try {
-            while (( line = buffReader.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
-            }
-        } catch (IOException e) {
-            return null;
-        }
-        return text.toString();
     }
 }

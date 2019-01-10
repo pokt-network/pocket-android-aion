@@ -11,6 +11,7 @@ import org.liquidplayer.javascript.JSFunction;
 import org.liquidplayer.javascript.JSObject;
 
 import network.pokt.aion.R;
+import network.pokt.aion.util.RawFileUtil;
 import network.pokt.pocketsdk.models.Transaction;
 import network.pokt.pocketsdk.models.Wallet;
 
@@ -44,7 +45,7 @@ public class CreateTransactionOperation extends BaseOperation {
     void executeOperation(JSContext jsContext) {
         // Parse input parameters for transaction signature
         String privateKey = this.wallet.getPrivateKey();
-        String jsCode = String.format(this.readRawTextFile(R.raw.create_transaction),
+        String jsCode = String.format(RawFileUtil.readRawTextFile(this.context, R.raw.create_transaction),
                 this.nonce, this.to, this.value, this.data, this.nrg, this.nrgPrice, privateKey);
 
         // Run code

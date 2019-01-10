@@ -4,14 +4,14 @@ import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 
-class PluginMockDispatcher extends Dispatcher {
+public class PluginMockDispatcher extends Dispatcher {
     @Override
     public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
         switch (request.getPath()) {
             case "/transactions":
                 return new MockResponse().setResponseCode(200).setBody("{\n" +
-                        "          \"network\": \"ETH\",\n" +
-                        "          \"subnetwork\": \"4\",\n" +
+                        "          \"network\": \"AION\",\n" +
+                        "          \"subnetwork\": \"mastery\",\n" +
                         "          \"serialized_tx\": \"0x000\",\n" +
                         "          \"tx_metadata\": {},\n" +
                         "          \"hash\": \"0x000\",\n" +
@@ -21,8 +21,8 @@ class PluginMockDispatcher extends Dispatcher {
                         "        }");
             case "/queries":
                 return new MockResponse().setResponseCode(200).setBody("{\n" +
-                        "          \"network\": \"ETH\",\n" +
-                        "          \"subnetwork\": \"4\",\n" +
+                        "          \"network\": \"AION\",\n" +
+                        "          \"subnetwork\": \"mastery\",\n" +
                         "          \"query\": {},\n" +
                         "          \"decoder\": {},\n" +
                         "          \"result\": \"0x0\",\n" +

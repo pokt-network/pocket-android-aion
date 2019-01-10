@@ -12,6 +12,7 @@ import java.util.logging.Logger;
 import network.pokt.aion.operations.CreateTransactionOperation;
 import network.pokt.aion.operations.CreateWalletOperation;
 import network.pokt.aion.operations.ImportWalletOperation;
+import network.pokt.aion.rpc.EthRpc;
 import network.pokt.pocketsdk.exceptions.CreateQueryException;
 import network.pokt.pocketsdk.exceptions.CreateTransactionException;
 import network.pokt.pocketsdk.exceptions.CreateWalletException;
@@ -26,6 +27,7 @@ import network.pokt.pocketsdk.models.Wallet;
 public class PocketAion extends PocketPlugin {
     private static final String NETWORK = "AION";
     private Context context;
+    public EthRpc eth;
 
     private PocketAion(@NotNull Configuration configuration) throws InvalidConfigurationException {
         super(configuration);
@@ -34,6 +36,7 @@ public class PocketAion extends PocketPlugin {
     public PocketAion(@NotNull Configuration configuration, @NotNull Context context) throws InvalidConfigurationException {
         this(configuration);
         this.context = context;
+        this.eth = new EthRpc(this);
     }
 
     @Override

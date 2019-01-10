@@ -8,6 +8,7 @@ import org.liquidplayer.javascript.JSException;
 import org.liquidplayer.javascript.JSObject;
 
 import network.pokt.aion.R;
+import network.pokt.aion.util.RawFileUtil;
 import network.pokt.pocketsdk.models.Wallet;
 
 public class CreateWalletOperation extends BaseOperation {
@@ -29,7 +30,7 @@ public class CreateWalletOperation extends BaseOperation {
     @Override
     void executeOperation(JSContext jsContext) {
         // Run the script to create the wallet in JS
-        jsContext.evaluateScript(this.readRawTextFile(R.raw.create_wallet));
+        jsContext.evaluateScript(RawFileUtil.readRawTextFile(this.context, R.raw.create_wallet));
         JSObject walletObj = jsContext.property("wallet").toObject();
         this.wallet = OperationUtil.parseWalletObj(walletObj, this.network, this.subnetwork);
     }
