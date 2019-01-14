@@ -39,8 +39,6 @@ public class EthRpc {
         aion_getTransactionCount,
         aion_getBlockTransactionCountByHash,
         aion_getBlockTransactionCountByNumber,
-        aion_getUncleCountByBlockHash,
-        aion_getUncleCountByBlockNumber,
         aion_getCode,
         aion_call,
         aion_estimateGas,
@@ -50,8 +48,6 @@ public class EthRpc {
         aion_getTransactionByBlockHashAndIndex,
         aion_getTransactionByBlockNumberAndIndex,
         aion_getTransactionReceipt,
-        aion_getUncleByBlockHashAndIndex,
-        aion_getUncleByBlockNumberAndIndex,
         aion_getLogs,
         aion_getProof
     }
@@ -125,20 +121,6 @@ public class EthRpc {
                 AionRpcMethod.aion_getBlockTransactionCountByNumber, subnetwork, callback);
     }
 
-    public void getUncleCountByBlockHash(@NotNull String blockHashHex, @NotNull String
-            subnetwork, @NotNull final RPCCallback<BigInteger> callback) throws
-            CreateQueryException {
-        this.executeGenericCountByBlockHash(AionRpcMethod.aion_getUncleCountByBlockHash, blockHashHex,
-                subnetwork, callback);
-    }
-
-    public void getUncleCountByBlockNumber(BlockTag blockTag, @NotNull String
-            subnetwork, @NotNull final RPCCallback<BigInteger> callback) throws
-            CreateQueryException {
-        this.executeGenericCountForBlockTagQuery(blockTag, AionRpcMethod.aion_getUncleCountByBlockNumber,
-                subnetwork, callback);
-    }
-
     public void getCode(@NotNull String address, BlockTag blockTag, @NotNull String subnetwork,
                         @NotNull final RPCCallback<String> callback) throws CreateQueryException {
         blockTag = BlockTag.tagOrLatest(blockTag);
@@ -159,12 +141,30 @@ public class EthRpc {
         }
 
         Map<String, Object> txParams = new HashMap<>();
-        txParams.put("nonce", nonce.toString(16));
-        txParams.put("to", toAddress);
-        txParams.put("value", value.toString(16));
-        txParams.put("data", data);
-        txParams.put("nrg", nrg.toString(16));
-        txParams.put("nrgPrice", nrgPrice.toString(16));
+        txParams.put("from", wallet.getAddress());
+        if (toAddress != null) {
+            txParams.put("to", toAddress);
+        }
+
+        if (nonce != null) {
+            txParams.put("nonce", nonce.toString(16));
+        }
+
+        if (value != null) {
+            txParams.put("value", value.toString(16));
+        }
+
+        if (data != null) {
+            txParams.put("data", data);
+        }
+
+        if (nrg != null) {
+            txParams.put("nrg", nrg.toString(16));
+        }
+
+        if (nrgPrice != null) {
+            txParams.put("nrgPrice", nrgPrice.toString(16));
+        }
         Transaction transaction = this.pocketAion.createTransaction(wallet, subnetwork, txParams);
         this.pocketAion.sendTransactionAsync(new TransactionHashCallback(transaction, callback));
     }
@@ -226,20 +226,6 @@ public class EthRpc {
                                       @NotNull final RPCCallback<JSONObject> callback) throws
             CreateQueryException {
         this.executeGetObjectWithHex(AionRpcMethod.aion_getTransactionReceipt, subnetwork, txHashHex, callback);
-    }
-
-    public void getUncleByBlockHashAndIndex(@NotNull String subnetwork, @NotNull String
-            blockHashHex, @NotNull BigInteger uncleIndex, @NotNull final RPCCallback<JSONObject>
-            callback) throws CreateQueryException {
-        this.executeGetObjectWithHexPair(AionRpcMethod.aion_getUncleByBlockHashAndIndex, subnetwork,
-                blockHashHex, uncleIndex.toString(16), callback);
-    }
-
-    public void getUncleByBlockNumberAndIndex(@NotNull String subnetwork, @NotNull BigInteger
-            blockNumber, @NotNull BigInteger uncleIndex, @NotNull final RPCCallback<JSONObject>
-            callback) throws CreateQueryException {
-        this.executeGetObjectWithHexPair(AionRpcMethod.aion_getUncleByBlockNumberAndIndex, subnetwork,
-                blockNumber.toString(16), uncleIndex.toString(16), callback);
     }
 
     public void getLogs(@NotNull String subnetwork, BlockTag fromBlock, BlockTag toBlock,
