@@ -79,7 +79,7 @@ public class CreateTransactionOperation extends BaseOperation {
 
     @Override
     public void handle(JSException exception) {
-        this.errorMsg = exception.getMessage();
+        super.handle(exception);
         this.transaction = null;
     }
 

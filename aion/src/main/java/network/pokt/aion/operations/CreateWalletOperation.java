@@ -41,6 +41,7 @@ public class CreateWalletOperation extends BaseOperation {
 
     @Override
     public void handle(JSException exception) {
+        super.handle(exception);
         this.wallet = null;
     }
 }

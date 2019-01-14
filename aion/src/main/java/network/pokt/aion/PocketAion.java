@@ -153,4 +153,8 @@ public class PocketAion extends PocketPlugin {
     public @NotNull String getNetwork() {
         return NETWORK;
     }
+
+    public Context getContext() {
+        return this.context;
+    }
 }

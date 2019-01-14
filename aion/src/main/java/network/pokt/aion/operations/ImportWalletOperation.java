@@ -44,6 +44,7 @@ public class ImportWalletOperation extends BaseOperation {
 
     @Override
     public void handle(JSException exception) {
+        super.handle(exception);
         this.wallet = null;
     }
 }
