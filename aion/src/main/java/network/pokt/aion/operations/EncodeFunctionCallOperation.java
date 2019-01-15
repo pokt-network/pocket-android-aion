@@ -13,6 +13,7 @@ import java.util.List;
 
 import network.pokt.aion.R;
 import network.pokt.aion.abi.v2.Function;
+import network.pokt.aion.util.HexStringUtil;
 import network.pokt.aion.util.RawFileUtil;
 
 public class EncodeFunctionCallOperation extends BaseOperation {
@@ -62,11 +63,19 @@ public class EncodeFunctionCallOperation extends BaseOperation {
         for (Object objParam : this.params) {
             String currStr;
             if (objParam instanceof List) {
-                currStr = "[" + TextUtils.join(",", (List)objParam) + "]";
+                currStr = "[" + TextUtils.join(",", this.objectsAsStrings((List)objParam)) + "]";
             } else {
                 currStr = this.objectAsString(objParam);
             }
             result.add(currStr);
+        }
+        return result;
+    }
+
+    private List<String> objectsAsStrings(List<Object> objParams) {
+        List<String> result = new ArrayList<>();
+        for (Object objParam : objParams) {
+            result.add(this.objectAsString(objParam));
         }
         return result;
     }
@@ -85,11 +94,10 @@ public class EncodeFunctionCallOperation extends BaseOperation {
                 objParam instanceof Short) {
             currStr = objParam.toString();
         } else if (objParam instanceof String) {
-            currStr = (String) objParam;
+            currStr = "\"" + objParam + "\"";
         } else if(objParam instanceof BigInteger) {
-            currStr = ((BigInteger)objParam).toString(16);
+            currStr = "\"" + HexStringUtil.prependZeroX(((BigInteger)objParam).toString(16)) + "\"";
         }
-
         return currStr;
     }
 }

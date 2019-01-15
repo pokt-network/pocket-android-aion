@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 
+import network.pokt.aion.util.HexStringUtil;
 import network.pokt.pocketsdk.models.Query;
 
 public class BigIntegerCallback extends BaseCallback<BigInteger> {
@@ -20,7 +21,7 @@ public class BigIntegerCallback extends BaseCallback<BigInteger> {
 
         Object queryResult = query.getResult();
         if (queryResult instanceof String) {
-            this.rpcCallback.onResult(new BigInteger((String) queryResult, 16), null);
+            this.rpcCallback.onResult(new BigInteger(HexStringUtil.removeLeadingZeroX((String) queryResult), 16), null);
         } else {
             this.rpcCallback.onResult(null, new Exception("Invalid result format"));
         }

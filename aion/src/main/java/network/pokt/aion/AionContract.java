@@ -20,31 +20,19 @@ import network.pokt.pocketsdk.models.Wallet;
 public class AionContract {
 
     private PocketAion pocketAion;
-    private JSONObject contractJSON;
-    private String schemaVersion;
+    private JSONArray abiDefinition;
     private String contractAddress;
     private String subnetwork;
     private Map<String, Function> functions = new HashMap<>();
 
-    // Constants
-    private static final String SUPPORTED_SCHEMA_VERSION = "2.0.0";
-
-    // JSON keys
-    private static final String ABI_KEY = "abi";
-    private static final String SCHEMA_VERSION_KEY = "schemaVersion";
-
-
     // Public interface
-    public AionContract(@NotNull PocketAion pocketAion, @NotNull JSONObject contractJSON, @NotNull String contractAddress, @NotNull String subnetwork) throws JSONException, AionContractException {
+    public AionContract(@NotNull PocketAion pocketAion, @NotNull JSONArray abiDefinition, @NotNull String contractAddress, @NotNull String subnetwork) throws JSONException, AionContractException {
         this.pocketAion = pocketAion;
-        this.contractJSON = contractJSON;
+        this.abiDefinition = abiDefinition;
         this.contractAddress = contractAddress;
         this.subnetwork = subnetwork;
-        if (this.subnetwork == null || this.pocketAion == null || this.contractJSON == null || this.contractAddress == null) {
+        if (this.subnetwork == null || this.pocketAion == null || this.abiDefinition == null || this.contractAddress == null) {
             throw new AionContractException("None of the arguments can be null");
-        }
-        if (!this.getSchemaVersion().equalsIgnoreCase(SUPPORTED_SCHEMA_VERSION)) {
-            throw new AionContractException("Unsupported schema version, please use schemaVersion: " + SUPPORTED_SCHEMA_VERSION);
         }
         this.parseContractFunctions();
     }
@@ -80,9 +68,8 @@ public class AionContract {
     }
 
     private void parseContractFunctions() throws JSONException {
-        JSONArray abi = this.contractJSON.getJSONArray(ABI_KEY);
-        for (int i = 0; i < abi.length(); i++) {
-            JSONObject abiElement = abi.optJSONObject(i);
+        for (int i = 0; i < this.abiDefinition.length(); i++) {
+            JSONObject abiElement = this.abiDefinition.optJSONObject(i);
             Function function = Function.parseFunctionElement(abiElement);
             if (function != null) {
                 functions.put(function.getName(), function);
@@ -90,14 +77,7 @@ public class AionContract {
         }
     }
 
-    private String getSchemaVersion() throws JSONException {
-        if (this.schemaVersion == null) {
-            this.schemaVersion = this.contractJSON.getString(SCHEMA_VERSION_KEY);
-        }
-        return this.schemaVersion;
-    }
-
-    private class RpcCallHandler implements RPCCallback<JSONObject> {
+    private class RpcCallHandler implements RPCCallback<String> {
 
         private final RPCCallback<Object> callback;
 
@@ -106,7 +86,7 @@ public class AionContract {
         }
 
         @Override
-        public void onResult(JSONObject result, Exception exception) {
+        public void onResult(String result, Exception exception) {
             this.callback.onResult(result, exception);
         }
     }

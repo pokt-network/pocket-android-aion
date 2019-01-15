@@ -10,7 +10,12 @@ import java.io.InputStreamReader;
 public class RawFileUtil {
 
     public static String readRawTextFile(Context context, int resId) {
-        InputStream inputStream = context.getResources().openRawResource(resId);
+        InputStream inputStream;
+        try {
+            inputStream = context.getResources().openRawResource(resId);
+        } catch (Exception exception) {
+            return null;
+        }
 
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader buffReader = new BufferedReader(inputStreamReader);

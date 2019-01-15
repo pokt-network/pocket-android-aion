@@ -171,11 +171,11 @@ public class EthRpc {
 
     public void call(@NotNull String subnetwork, @NotNull String toAddress, BlockTag blockTag,
                      String fromAddress, BigInteger nrg, BigInteger nrgPrice, BigInteger value,
-                     String data, @NotNull final RPCCallback<JSONObject> callback) throws
+                     String data, @NotNull final RPCCallback<String> callback) throws
             CreateQueryException {
         Query query = this.callOrEstimateGasQuery(AionRpcMethod.aion_call, subnetwork, toAddress, blockTag,
                 fromAddress, nrg, nrgPrice, value, data);
-        this.pocketAion.executeQueryAsync(new ObjectCallback(query, callback));
+        this.pocketAion.executeQueryAsync(new StringCallback(query, callback));
     }
 
     public void estimateGas(@NotNull String subnetwork, String toAddress, BlockTag blockTag,

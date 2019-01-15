@@ -16,7 +16,6 @@ public class Function {
     private String name;
     private List<InputOutput> outputs;
     private boolean payable;
-    private String stateMutability;
     private JSONObject functionJSON;
 
     // Constants
@@ -25,18 +24,16 @@ public class Function {
     private static final String NAME_KEY = "name";
     private static final String OUTPUTS_KEY = "outputs";
     private static final String PAYABLE_KEY = "payable";
-    private static final String STATE_MUTABILITY_KEY = "stateMutability";
     private static final String TYPE_KEY = "type";
     private static final String FUNCTION_TYPE_VALUE = "function";
 
     public Function(boolean constant, List<InputOutput> inputs, String name, List<InputOutput>
-            outputs, boolean payable, String stateMutability, JSONObject functionJSON) {
+            outputs, boolean payable, JSONObject functionJSON) {
         this.constant = constant;
         this.inputs = inputs;
         this.name = name;
         this.outputs = outputs;
         this.payable = payable;
-        this.stateMutability = stateMutability;
         this.functionJSON = functionJSON;
     }
 
@@ -49,8 +46,7 @@ public class Function {
         String name = functionJSON.getString(NAME_KEY);
         List<InputOutput> outputs = InputOutput.fromInputJSONArray(functionJSON.getJSONArray(OUTPUTS_KEY));
         boolean payable = functionJSON.getBoolean(PAYABLE_KEY);
-        String stateMutability = functionJSON.getString(STATE_MUTABILITY_KEY);
-        return new Function(constant, inputs, name, outputs, payable, stateMutability, functionJSON);
+        return new Function(constant, inputs, name, outputs, payable, functionJSON);
     }
 
     public boolean isConstant() {
@@ -71,10 +67,6 @@ public class Function {
 
     public boolean isPayable() {
         return payable;
-    }
-
-    public String getStateMutability() {
-        return stateMutability;
     }
 
     public JSONObject getFunctionJSON() {

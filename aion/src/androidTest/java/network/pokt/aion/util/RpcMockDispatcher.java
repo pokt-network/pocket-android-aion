@@ -26,7 +26,8 @@ public class RpcMockDispatcher extends Dispatcher {
 
         String rawResName = rpcMethod.substring(suffixLength, rpcMethod.length()).toLowerCase();
         int resId = context.getResources().getIdentifier(rawResName, "raw", context.getPackageName());
-        return RawFileUtil.readRawTextFile(context, resId);
+        String result = RawFileUtil.readRawTextFile(context, resId);
+        return result == null ? "" : result;
     }
 
     @Override
@@ -43,7 +44,17 @@ public class RpcMockDispatcher extends Dispatcher {
                     e.printStackTrace();
                     throw new InterruptedException("Invalid request body");
                 }
-                return new MockResponse().setResponseCode(200).setBody(this.getRawResponse(requestRpcMethod));
+                return new MockResponse().setResponseCode(200).setBody("{\\\"network\\\":\\\"AION" +
+                        "\\\",\\\"subnetwork\\\":\\\"mastery\\\"," +
+                        "\\\"query\\\":{\\\"rpc_method\\\":\\\"aion_protocolVersion\\\"," +
+                        "\\\"rpc_params\\\":[]},\\\"decoder\\\":{},\\\"result\\\":\\\"54\\\"," +
+                        "\\\"decoded\\\":false,\\\"error\\\":false,\\\"error_msg\\\":null}");
+                //String responseBody = this.getRawResponse(requestRpcMethod);
+//                if (responseBody == null) {
+//                    return new MockResponse().setResponseCode(200).setBody("{}");
+//                } else {
+//                    return new MockResponse().setResponseCode(200).setBody(responseBody);
+//                }
             default:
                 return new MockResponse().setResponseCode(404);
         }
