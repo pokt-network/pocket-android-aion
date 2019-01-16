@@ -44,7 +44,7 @@ public class AionContract {
         }
 
         String data = function.getEncodedFunctionCall(this.pocketAion.getContext(), functionParams);
-        this.pocketAion.aion.call(this.subnetwork, this.contractAddress, null, fromAddress, nrg, nrgPrice, value, data, new RpcCallHandler(callback));
+        this.pocketAion.eth.call(this.subnetwork, this.contractAddress, null, fromAddress, nrg, nrgPrice, value, data, new RpcCallHandler(callback));
     }
 
     public void executeFunction(@NotNull String functionName, @NotNull Wallet wallet, List<Object> functionParams, BigInteger nonce, @NotNull BigInteger nrg, @NotNull BigInteger nrgPrice, @NotNull BigInteger value, @NotNull final RPCCallback<String> callback) throws CreateTransactionException, CreateQueryException, AionContractException {
@@ -58,13 +58,13 @@ public class AionContract {
             this.sendTransaction(wallet, nonce, nrg, nrgPrice, value, data, callback);
         } else {
             TxCountRpcHandler txCountHandler = new TxCountRpcHandler(wallet, nrg, nrgPrice, value, data, callback);
-            this.pocketAion.aion.getTransactionCount(wallet.getAddress(), null, this.subnetwork, txCountHandler);
+            this.pocketAion.eth.getTransactionCount(wallet.getAddress(), null, this.subnetwork, txCountHandler);
         }
     }
 
     // Private interface
     private void sendTransaction(@NotNull Wallet wallet, @NotNull BigInteger nonce, @NotNull BigInteger nrg, @NotNull BigInteger nrgPrice, @NotNull BigInteger value, @NotNull String data, @NotNull final RPCCallback<String> callback) throws CreateTransactionException {
-        this.pocketAion.aion.sendTransaction(this.subnetwork, wallet, this.contractAddress, nrg, nrgPrice, value, data, nonce, callback);
+        this.pocketAion.eth.sendTransaction(this.subnetwork, wallet, this.contractAddress, nrg, nrgPrice, value, data, nonce, callback);
     }
 
     private void parseContractFunctions() throws JSONException {

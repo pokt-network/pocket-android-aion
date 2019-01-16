@@ -29,7 +29,6 @@ public class PocketAion extends PocketPlugin {
     private static final String NETWORK = "AION";
     private Context context;
     public EthRpc eth;
-    public EthRpc aion;
     public NetRpc net;
 
     private PocketAion(@NotNull Configuration configuration) throws InvalidConfigurationException {
@@ -40,7 +39,6 @@ public class PocketAion extends PocketPlugin {
         this(configuration);
         this.context = context;
         this.eth = new EthRpc(this);
-        this.aion = this.eth;
         this.net = new NetRpc(this);
     }
 

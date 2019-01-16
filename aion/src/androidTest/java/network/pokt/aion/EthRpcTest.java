@@ -43,7 +43,7 @@ public class EthRpcTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         try {
-            pocketAion = new PocketAion(new TestConfiguration(new RpcMockDispatcher(appContext, 5)), appContext);
+            pocketAion = new PocketAion(new TestConfiguration(new RpcMockDispatcher(appContext, 4)), appContext);
             assertNotNull(pocketAion);
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();

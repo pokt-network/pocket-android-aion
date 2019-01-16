@@ -31,7 +31,7 @@ public class NetRpcTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         try {
-            pocketAion = new PocketAion(new TestConfiguration(new RpcMockDispatcher(appContext, 5)), appContext);
+            pocketAion = new PocketAion(new TestConfiguration(new RpcMockDispatcher(appContext, 4)), appContext);
             assertNotNull(pocketAion);
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
@@ -47,7 +47,7 @@ public class NetRpcTest {
                     pocketAion.net.version("mastery", new RPCCallback<String>() {
                         @Override
                         public void onResult(String result, Exception exception) {
-                            assertEquals(result, "mastery");
+                            assertEquals(result, "0");
                             assertNull(exception);
                             semaphore.release();
                         }
