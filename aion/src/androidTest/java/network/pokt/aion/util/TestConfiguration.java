@@ -10,9 +10,10 @@ import okhttp3.mockwebserver.MockWebServer;
 public class TestConfiguration implements Configuration {
 
 
-    MockWebServer server = new MockWebServer();
+    MockWebServer server;
 
     public TestConfiguration(Dispatcher dispatcher) {
+        this.server = new MockWebServer();
         server.setDispatcher(dispatcher);
     }
 

@@ -32,7 +32,6 @@ public class RpcMockDispatcher extends Dispatcher {
 
     @Override
     public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
-        //this.peek().setSocketPolicy(SocketPolicy.NO_RESPONSE);
         switch (request.getPath()) {
             case "/queries":
                 String requestRpcMethod = null;
@@ -44,17 +43,12 @@ public class RpcMockDispatcher extends Dispatcher {
                     e.printStackTrace();
                     throw new InterruptedException("Invalid request body");
                 }
-                return new MockResponse().setResponseCode(200).setBody("{\\\"network\\\":\\\"AION" +
-                        "\\\",\\\"subnetwork\\\":\\\"mastery\\\"," +
-                        "\\\"query\\\":{\\\"rpc_method\\\":\\\"aion_protocolVersion\\\"," +
-                        "\\\"rpc_params\\\":[]},\\\"decoder\\\":{},\\\"result\\\":\\\"54\\\"," +
-                        "\\\"decoded\\\":false,\\\"error\\\":false,\\\"error_msg\\\":null}");
-                //String responseBody = this.getRawResponse(requestRpcMethod);
-//                if (responseBody == null) {
-//                    return new MockResponse().setResponseCode(200).setBody("{}");
-//                } else {
-//                    return new MockResponse().setResponseCode(200).setBody(responseBody);
-//                }
+                String responseBody = this.getRawResponse(requestRpcMethod);
+                if (responseBody == null) {
+                    return new MockResponse().setResponseCode(200).setBody("{}");
+                } else {
+                    return new MockResponse().setResponseCode(200).setBody(responseBody);
+                }
             default:
                 return new MockResponse().setResponseCode(404);
         }
