@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 public class NetRpcTest {
 
     PocketAion pocketAion;
+    static final String MASTERY_SUBNETWORK = "32";
 
     public NetRpcTest() {
         // Context of the app under test.
@@ -44,7 +45,7 @@ public class NetRpcTest {
             @Override
             public void execute(final Semaphore semaphore) {
                 try {
-                    pocketAion.net.version("mastery", new RPCCallback<String>() {
+                    pocketAion.net.version(MASTERY_SUBNETWORK, new RPCCallback<String>() {
                         @Override
                         public void onResult(String result, Exception exception) {
                             assertEquals(result, "0");
@@ -65,7 +66,7 @@ public class NetRpcTest {
             @Override
             public void execute(final Semaphore semaphore) {
                 try {
-                    pocketAion.net.listening("mastery", new RPCCallback<Boolean>() {
+                    pocketAion.net.listening(MASTERY_SUBNETWORK, new RPCCallback<Boolean>() {
                         @Override
                         public void onResult(Boolean result, Exception exception) {
                             assertNotNull(result);
@@ -86,7 +87,7 @@ public class NetRpcTest {
             @Override
             public void execute(final Semaphore semaphore) {
                 try {
-                    pocketAion.net.peerCount("mastery", new RPCCallback<BigInteger>() {
+                    pocketAion.net.peerCount(MASTERY_SUBNETWORK, new RPCCallback<BigInteger>() {
                         @Override
                         public void onResult(BigInteger result, Exception exception) {
                             assertNotNull(result);

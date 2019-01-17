@@ -135,7 +135,7 @@ public class EthRpc {
             String toAddress, @NotNull BigInteger nrg, @NotNull BigInteger nrgPrice, BigInteger
             value, String data, @NotNull BigInteger nonce, @NotNull final RPCCallback<String>
             callback) throws CreateTransactionException {
-        if (subnetwork.equalsIgnoreCase(wallet.getSubnetwork())) {
+        if (!subnetwork.equalsIgnoreCase(wallet.getSubnetwork())) {
             throw new CreateTransactionException(wallet, subnetwork, null, "Invalid wallet's " +
                     "subnetwork");
         }

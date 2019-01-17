@@ -49,6 +49,17 @@ public class RpcMockDispatcher extends Dispatcher {
                 } else {
                     return new MockResponse().setResponseCode(200).setBody(responseBody);
                 }
+            case "/transactions":
+                return new MockResponse().setResponseCode(200).setBody("{\n" +
+                        "          \"network\": \"AION\",\n" +
+                        "          \"subnetwork\": \"32\",\n" +
+                        "          \"serialized_tx\": \"0x000\",\n" +
+                        "          \"tx_metadata\": {},\n" +
+                        "          \"hash\": \"0x416aed4e6c58ec1a31b1625cb7c20bcfc650f0d7a92ab9f479ecbdf2ed226e55\",\n" +
+                        "          \"metadata\": {},\n" +
+                        "          \"error\": false,\n" +
+                        "          \"error_msg\": null\n" +
+                        "        }");
             default:
                 return new MockResponse().setResponseCode(404);
         }
