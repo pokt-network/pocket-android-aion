@@ -36,8 +36,22 @@ A `Query` refers to any calls that read data from the current state of the netwo
 
 ## Subnetwork considerations
 A subnetwork in terms of a Pocket Node is any given parallel network for a decentralized system, for example
-in the case of AION, besides Mainnet (subnetwork `256`), you also have access to the 32 testnet (subnetwork `32`). 
-In the case of connecting to a custom network, make sure the Pocket Node you are connecting to supports the given subnetwork.
+in the case of AION, besides Mainnet (subnetwork `256`), you also have access to the Mastery testnet (subnetwork `32`). 
+In the case of connecting to a custom network, make sure the Pocket Node you are connecting to supports the given subnetwork by executing the following `curl` command.
+
+```
+// Request
+curl -X GET https://aion.pokt.network/health
+
+// Result
+{
+    "version":"0.0.12",
+    "networks":[
+        {"network":"AION","version":"0.0.7","package_name":"pnp-aion","subnetworks":["256","32"]}
+    ]
+}
+
+```
 
 This is useful to allow users to hop between networks, or for establishing differences between your application's 
 test environment and production environments.
@@ -112,8 +126,8 @@ To send a transaction just use the `sendTransaction` function in the `eth` names
 below:
 
 ```
-wallet = pocketAion.createWallet(MASTERY_SUBNETWORK, null);
-pocketAion.eth.sendTransaction(MASTERY_SUBNETWORK, wallet, "0xa0f9b0086fdf6c29f67c009e98eb31e1ddf1809a6ef2e44296a377b37ebb9827", new BigInteger("21000"), new BigInteger("10000000000"), new BigInteger("1"), null, new BigInteger("0"), new RPCCallback<String>() {
+wallet = pocketAion.createWallet("32", null);
+pocketAion.eth.sendTransaction("32", wallet, "0xa0f9b0086fdf6c29f67c009e98eb31e1ddf1809a6ef2e44296a377b37ebb9827", new BigInteger("21000"), new BigInteger("10000000000"), new BigInteger("1"), null, new BigInteger("0"), new RPCCallback<String>() {
     @Override
     public void onResult(String result, Exception exception) {
         // Result is the transaction hash
