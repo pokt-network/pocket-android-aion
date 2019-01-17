@@ -76,6 +76,8 @@ Wallet importedWallet = pocketAion.importWallet(privateKey, "32", address, null)
 
 ## Querying Data
 Currently there are 2 supported namespaces in Pocket Node for AION: `net` and `eth`.
+In the examples below you will see how you can query the supported RPC calls in both 
+namespaces.
 
 ```
 // Example accessing a net RPC call 
@@ -103,6 +105,20 @@ try {
 } catch (CreateQueryException e) {
     e.printStackTrace();
 }                                                                                                                                                                                                                                                                                                             
+```
+
+## Sending a transaction
+To send a transaction just use the `sendTransaction` function in the `eth` namespace, like the example 
+below:
+
+```
+wallet = pocketAion.createWallet(MASTERY_SUBNETWORK, null);
+pocketAion.eth.sendTransaction(MASTERY_SUBNETWORK, wallet, "0xa0f9b0086fdf6c29f67c009e98eb31e1ddf1809a6ef2e44296a377b37ebb9827", new BigInteger("21000"), new BigInteger("10000000000"), new BigInteger("1"), null, new BigInteger("0"), new RPCCallback<String>() {
+    @Override
+    public void onResult(String result, Exception exception) {
+        // Result is the transaction hash
+    }
+});                       
 ```
 
 # Advanced Usage
@@ -154,7 +170,7 @@ String[] rpcParams = {"0x0", "latest"};
 Map<String, Object> params = new HashMap<>();
 params.put("rpcMethod", "eth_getBalance");
 params.put("rpcParams", Arrays.asList(rpcParams));
-Query query = this.pocketAion.createQuery("4", params, null);
+Query query = this.pocketAion.createQuery("32", params, null);
 ```
 
 To send your `Query` to the node use the `executeQuery` method:
