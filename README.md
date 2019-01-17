@@ -121,8 +121,71 @@ pocketAion.eth.sendTransaction(MASTERY_SUBNETWORK, wallet, "0xa0f9b0086fdf6c29f6
 });                       
 ```
 
+## Interacting with a smart contract
+To interact with an AION smart contract you must use the `AionContract` class. 
+
+### Initializing an AionContract instance
+Here's an example on how to initialize your `AionContract`:
+
+```
+// You must create an instance of PocketAion first
+PocketAion pocketAion = new PocketAion(new Configuration() {
+    @Override
+    public URL getNodeUrl() throws MalformedURLException {
+        return new URL("https://aion.pokt.network");
+    }
+}, appContext);
+
+// Then initialize the JSONArray containing your contract's abiInterface
+String rawJSON = "[{\"outputs\":[{\"name\":\"d\",\"type\":\"uint128\"}]," +
+    "\"constant\":true,\"payable\":false,\"inputs\":[{\"name\":\"a\"," +
+    "\"type\":\"uint128\"}],\"name\":\"multiply\",\"type\":\"function\"}]";
+JSONArray abiInterface = new JSONArray(rawJSON);
+    
+// Finally initialize your AionContract
+AionContract contract = new AionContract(pocketAion, abiInterface, "0xa0f9b0086fdf6c29f67c009e98eb31e1ddf1809a6ef2e44296a377b37ebb9827", "32");
+```
+
+### Calling an AionContract function
+There are 2 main distinctions when calling a smart contract function, whether or not calling it alters 
+the state of the smart contract, which is indicated in the `constant` attribute of the JSON.
+
+To call a constant function follow the example below.
+```
+// Prepare parameters
+List<Object> functionParams = new ArrayList<>();
+functionParams.add(new BigInteger("10"));
+
+// Execute function (null values are optional and the defaults will be used if not provided)
+contract.executeConstantFunction("multiply", null, functionParams, null, null, null, new RPCCallback<Object>() {
+
+    @Override
+    public void onResult(Object result, Exception exception) {
+        // Since we know from JSON ABI that the return value is a uint128 we can check if it's of type String
+        // Result should be input * 7
+        // Since input was 10, result = 70
+    }
+});
+                    
+```
+
+To call a non-constant function it's a similar flow as before, we just need a `Wallet` to sign the transaction object.
+```
+// Prepare parameters
+List<Object> functionParams = new ArrayList<>();
+functionParams.add(new BigInteger("10"));
+
+// Execute function (null values are optional and the defaults will be used if not provided)
+contract.executeFunction("multiply", wallet, functionParams, null, null, null, null, new RPCCallback<String>() {
+    @Override
+    public void onResult(String result, Exception exception) {
+        // The result is the transaction hash generated.
+    }
+});
+```
+
 # Advanced Usage
-In addition to the functions above you can use the functions below to send the created `Transaction` and `Query` objects to your configured Pocket Node, either synchronously or asynchronously.
+In addition to the functions above you can use the functions below to create and send `Transaction` and `Query` objects to your configured Pocket Node, either synchronously or asynchronously.
 
 ## Creating and sending a Transaction
 Follow the example below to create a `Transaction` object to write to the given AION network with the parameters below and `subnetwork`. 
