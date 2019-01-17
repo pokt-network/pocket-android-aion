@@ -169,7 +169,7 @@ public class EthRpcTest {
             @Override
             public void execute(final Semaphore semaphore) {
                 try {
-                    pocketAion.eth.getStorageAt("0x00000", new BigInteger("21000", 16), null, MASTERY_SUBNETWORK, new RPCCallback<String>() {
+                    pocketAion.eth.getStorageAt("0x00000", new BigInteger("21000"), null, MASTERY_SUBNETWORK, new RPCCallback<String>() {
                         @Override
                         public void onResult(String result, Exception exception) {
                             assertNotNull(result);
@@ -379,7 +379,7 @@ public class EthRpcTest {
             @Override
             public void execute(final Semaphore semaphore) {
                 try {
-                    pocketAion.eth.getTransactionByBlockHashAndIndex(MASTERY_SUBNETWORK, "0x0", new BigInteger("21000", 16), new RPCCallback<JSONObject>() {
+                    pocketAion.eth.getTransactionByBlockHashAndIndex(MASTERY_SUBNETWORK, "0x0", new BigInteger("21000"), new RPCCallback<JSONObject>() {
                         @Override
                         public void onResult(JSONObject result, Exception exception) {
                             assertNotNull(result);
@@ -400,7 +400,7 @@ public class EthRpcTest {
             @Override
             public void execute(final Semaphore semaphore) {
                 try {
-                    pocketAion.eth.getTransactionByBlockNumberAndIndex(MASTERY_SUBNETWORK, null, new BigInteger("21000", 16), new RPCCallback<JSONObject>() {
+                    pocketAion.eth.getTransactionByBlockNumberAndIndex(MASTERY_SUBNETWORK, null, new BigInteger("21000"), new RPCCallback<JSONObject>() {
                         @Override
                         public void onResult(JSONObject result, Exception exception) {
                             assertNotNull(result);

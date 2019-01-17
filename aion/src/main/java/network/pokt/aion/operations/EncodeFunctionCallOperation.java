@@ -7,14 +7,12 @@ import org.jetbrains.annotations.NotNull;
 import org.liquidplayer.javascript.JSContext;
 import org.liquidplayer.javascript.JSException;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 import network.pokt.aion.R;
 import network.pokt.aion.abi.v2.Function;
-import network.pokt.aion.util.HexStringUtil;
 import network.pokt.aion.util.RawFileUtil;
+import network.pokt.aion.util.RpcParamsUtil;
 
 public class EncodeFunctionCallOperation extends BaseOperation {
 
@@ -36,7 +34,7 @@ public class EncodeFunctionCallOperation extends BaseOperation {
     void executeOperation(JSContext jsContext) {
         // Convert parameters to string
         String functionJSONStr = this.function.getFunctionJSON().toString();
-        String functionParamsStr = TextUtils.join(",", this.getJSParams());
+        String functionParamsStr = TextUtils.join(",", RpcParamsUtil.formatRpcParams(this.params));
 
         // Generate code to run
         String jsCode = String.format(RawFileUtil.readRawTextFile(this.context, R.raw.encode_function_call), functionJSONStr, functionParamsStr);
@@ -56,48 +54,5 @@ public class EncodeFunctionCallOperation extends BaseOperation {
     public void handle(JSException exception) {
         super.handle(exception);
         this.encodedFunctionCall = null;
-    }
-
-    public List<String> getJSParams() {
-        List<String> result = new ArrayList<>();
-        for (Object objParam : this.params) {
-            String currStr;
-            if (objParam instanceof List) {
-                currStr = "[" + TextUtils.join(",", this.objectsAsStrings((List)objParam)) + "]";
-            } else {
-                currStr = this.objectAsString(objParam);
-            }
-            result.add(currStr);
-        }
-        return result;
-    }
-
-    private List<String> objectsAsStrings(List<Object> objParams) {
-        List<String> result = new ArrayList<>();
-        for (Object objParam : objParams) {
-            result.add(this.objectAsString(objParam));
-        }
-        return result;
-    }
-
-    private String objectAsString(Object objParam) {
-        String currStr = null;
-
-        if (objParam == null) {
-            currStr = "null";
-        }  else if (objParam instanceof Boolean ||
-                objParam instanceof Double ||
-                objParam instanceof Float ||
-                objParam instanceof Integer ||
-                objParam instanceof Long ||
-                objParam instanceof Byte ||
-                objParam instanceof Short) {
-            currStr = objParam.toString();
-        } else if (objParam instanceof String) {
-            currStr = "\"" + objParam + "\"";
-        } else if(objParam instanceof BigInteger) {
-            currStr = "\"" + HexStringUtil.prependZeroX(((BigInteger)objParam).toString(16)) + "\"";
-        }
-        return currStr;
     }
 }

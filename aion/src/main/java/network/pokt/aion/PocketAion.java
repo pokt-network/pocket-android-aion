@@ -3,6 +3,7 @@ package network.pokt.aion;
 import android.content.Context;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -117,8 +118,9 @@ public class PocketAion extends PocketPlugin {
         try {
             rpcMethod = (String) params.get("rpcMethod");
             rpcParams = (List<Object>) params.get("rpcParams");
+            JSONArray rpcParamsJSON = new JSONArray(rpcParams);
             queryData.put("rpc_method", rpcMethod);
-            queryData.put("rpc_params", rpcParams);
+            queryData.put("rpc_params", rpcParamsJSON);
         } catch (Exception e) {
             throw new CreateQueryException(subnetwork, params, decoder, e.getMessage());
         }

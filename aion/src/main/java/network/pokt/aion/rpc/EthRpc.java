@@ -20,6 +20,7 @@ import network.pokt.aion.rpc.callbacks.StringCallback;
 import network.pokt.aion.rpc.callbacks.TransactionHashCallback;
 import network.pokt.aion.rpc.types.BlockTag;
 import network.pokt.aion.rpc.types.ObjectOrBoolean;
+import network.pokt.aion.util.HexStringUtil;
 import network.pokt.pocketsdk.exceptions.CreateQueryException;
 import network.pokt.pocketsdk.exceptions.CreateTransactionException;
 import network.pokt.pocketsdk.models.Query;
@@ -92,9 +93,9 @@ public class EthRpc {
                              @NotNull BlockTag blockTag, @NotNull String subnetwork, @NotNull
                              final RPCCallback<String> callback) throws CreateQueryException {
         blockTag = BlockTag.tagOrLatest(blockTag);
-        List<String> rpcParams = new ArrayList<>();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(address);
-        rpcParams.add(storagePosition.toString(16));
+        rpcParams.add(HexStringUtil.prependZeroX(storagePosition.toString(16)));
         rpcParams.add(blockTag.getBlockTagString());
         Query query = this.createQuery(subnetwork, AionRpcMethod.eth_getStorageAt, rpcParams);
         this.pocketAion.executeQueryAsync(new StringCallback(query, callback));
@@ -124,7 +125,7 @@ public class EthRpc {
     public void getCode(@NotNull String address, BlockTag blockTag, @NotNull String subnetwork,
                         @NotNull final RPCCallback<String> callback) throws CreateQueryException {
         blockTag = BlockTag.tagOrLatest(blockTag);
-        List<String> rpcParams = new ArrayList<>();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(address);
         rpcParams.add(blockTag.getBlockTagString());
         Query query = this.createQuery(subnetwork, AionRpcMethod.eth_getCode, rpcParams);
@@ -147,11 +148,11 @@ public class EthRpc {
         }
 
         if (nonce != null) {
-            txParams.put("nonce", nonce.toString(16));
+            txParams.put("nonce", HexStringUtil.prependZeroX(nonce.toString(16)));
         }
 
         if (value != null) {
-            txParams.put("value", value.toString(16));
+            txParams.put("value", HexStringUtil.prependZeroX(value.toString(16)));
         }
 
         if (data != null) {
@@ -159,11 +160,11 @@ public class EthRpc {
         }
 
         if (nrg != null) {
-            txParams.put("nrg", nrg.toString(16));
+            txParams.put("nrg", HexStringUtil.prependZeroX(nrg.toString(16)));
         }
 
         if (nrgPrice != null) {
-            txParams.put("nrgPrice", nrgPrice.toString(16));
+            txParams.put("nrgPrice", HexStringUtil.prependZeroX(nrgPrice.toString(16)));
         }
         Transaction transaction = this.pocketAion.createTransaction(wallet, subnetwork, txParams);
         this.pocketAion.sendTransactionAsync(new TransactionHashCallback(transaction, callback));
@@ -210,7 +211,7 @@ public class EthRpc {
             blockHashHex, @NotNull BigInteger txIndex, @NotNull final RPCCallback<JSONObject>
             callback) throws CreateQueryException {
         this.executeGetObjectWithHexPair(AionRpcMethod.eth_getTransactionByBlockHashAndIndex, subnetwork,
-                blockHashHex, txIndex.toString(16), callback);
+                blockHashHex, HexStringUtil.prependZeroX(txIndex.toString(16)), callback);
     }
 
     public void getTransactionByBlockNumberAndIndex(@NotNull String subnetwork, BlockTag
@@ -219,7 +220,7 @@ public class EthRpc {
 
         blockTag = BlockTag.tagOrLatest(blockTag);
         this.executeGetObjectWithHexPair(AionRpcMethod.eth_getTransactionByBlockNumberAndIndex, subnetwork,
-                blockTag.getBlockTagString(), txIndex.toString(16), callback);
+                blockTag.getBlockTagString(), HexStringUtil.prependZeroX(txIndex.toString(16)), callback);
     }
 
     public void getTransactionReceipt(@NotNull String subnetwork, @NotNull String txHashHex,
@@ -249,7 +250,7 @@ public class EthRpc {
             queryParams.put("toBlock", BlockTag.tagOrLatest(toBlock));
         }
 
-        List rpcParams = new ArrayList();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(queryParams);
         Query query = this.createQuery(subnetwork, AionRpcMethod.eth_getLogs, rpcParams);
         this.pocketAion.executeQueryAsync(new ObjectListCallback(query, callback));
@@ -268,7 +269,7 @@ public class EthRpc {
     }
 
     // Private interfaces
-    private Query createQuery(String subnetwork, AionRpcMethod rpcMethod, List rpcParams) throws
+    private Query createQuery(String subnetwork, AionRpcMethod rpcMethod, List<Object> rpcParams) throws
             CreateQueryException {
         Map<String, Object> params = new HashMap<>();
         params.put("rpcMethod", rpcMethod.name());
@@ -282,7 +283,7 @@ public class EthRpc {
                                              RPCCallback<BigInteger> callback) throws
             CreateQueryException {
         blockTag = BlockTag.tagOrLatest(blockTag);
-        List<String> rpcParams = new ArrayList<>();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(address);
         rpcParams.add(blockTag.getBlockTagString());
         Query query = this.createQuery(subnetwork, rpcMethod, rpcParams);
@@ -292,7 +293,7 @@ public class EthRpc {
     private void executeGenericCountByBlockHash(@NotNull AionRpcMethod rpcMethod, @NotNull String
             blockHashHex, @NotNull String subnetwork, @NotNull final RPCCallback<BigInteger>
             callback) throws CreateQueryException {
-        List<String> rpcParams = new ArrayList<>();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(blockHashHex);
         Query query = this.createQuery(subnetwork, rpcMethod, rpcParams);
         this.pocketAion.executeQueryAsync(new BigIntegerCallback(query, callback));
@@ -302,7 +303,7 @@ public class EthRpc {
             rpcMethod, @NotNull String subnetwork, @NotNull final RPCCallback<BigInteger>
             callback) throws CreateQueryException {
         blockTag = BlockTag.tagOrLatest(blockTag);
-        List<String> rpcParams = new ArrayList<>();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(blockTag.getBlockTagString());
         Query query = this.createQuery(subnetwork, rpcMethod, rpcParams);
         this.pocketAion.executeQueryAsync(new BigIntegerCallback(query, callback));
@@ -320,14 +321,14 @@ public class EthRpc {
             callTxParams.put("from", fromAddress);
         }
         if (nrg != null) {
-            callTxParams.put("nrg", nrg.toString(16));
+            callTxParams.put("nrg", HexStringUtil.prependZeroX(nrg.toString(16)));
         }
         if (nrgPrice != null) {
-            callTxParams.put("nrgPrice", nrgPrice.toString(16));
+            callTxParams.put("nrgPrice", HexStringUtil.prependZeroX(nrgPrice.toString(16)));
         }
 
         if (value != null) {
-            callTxParams.put("value", value.toString(16));
+            callTxParams.put("value", HexStringUtil.prependZeroX(value.toString(16)));
         }
 
         if (data != null) {
@@ -335,8 +336,8 @@ public class EthRpc {
         }
         JSONObject callTxObj = new JSONObject(callTxParams);
 
-        List<String> rpcParams = new ArrayList<>();
-        rpcParams.add(callTxObj.toString());
+        List<Object> rpcParams = new ArrayList<>();
+        rpcParams.add(callTxObj);
         rpcParams.add(blockTag.getBlockTagString());
 
         return this.createQuery(subnetwork, rpcMethod, rpcParams);
@@ -346,9 +347,9 @@ public class EthRpc {
                                       @NotNull String blockIdHex, boolean fullTx, @NotNull final
                                       RPCCallback<JSONObject> callback) throws
             CreateQueryException {
-        List<String> rpcParams = new ArrayList<>();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(blockIdHex);
-        rpcParams.add(String.valueOf(fullTx));
+        rpcParams.add(new Boolean(fullTx));
         Query query = this.createQuery(subnetwork, rpcMethod, rpcParams);
         this.pocketAion.executeQueryAsync(new ObjectCallback(query, callback));
     }
@@ -357,7 +358,7 @@ public class EthRpc {
                                          @NotNull String hex, @NotNull final
                                          RPCCallback<JSONObject> callback) throws
             CreateQueryException {
-        List<String> rpcParams = new ArrayList<>();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(hex);
         Query query = this.createQuery(subnetwork, rpcMethod, rpcParams);
         this.pocketAion.executeQueryAsync(new ObjectCallback(query, callback));
@@ -366,7 +367,7 @@ public class EthRpc {
     private void executeGetObjectWithHexPair(@NotNull AionRpcMethod rpcMethod, @NotNull String
             subnetwork, @NotNull String hexPrimary, @NotNull String hexSecondary, @NotNull final
     RPCCallback<JSONObject> callback) throws CreateQueryException {
-        List<String> rpcParams = new ArrayList<>();
+        List<Object> rpcParams = new ArrayList<>();
         rpcParams.add(hexPrimary);
         rpcParams.add(hexSecondary);
         Query query = this.createQuery(subnetwork, rpcMethod, rpcParams);
