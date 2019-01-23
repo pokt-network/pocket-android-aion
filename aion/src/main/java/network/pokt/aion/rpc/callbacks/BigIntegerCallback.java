@@ -22,7 +22,9 @@ public class BigIntegerCallback extends BaseCallback<BigInteger> {
         Object queryResult = query.getResult();
         if (queryResult instanceof String) {
             this.rpcCallback.onResult(new BigInteger(HexStringUtil.removeLeadingZeroX((String) queryResult), 16), null);
-        } else {
+        } else if (queryResult instanceof Integer) {
+            this.rpcCallback.onResult(new BigInteger(((Integer) queryResult).toString()), null);
+        }else {
             this.rpcCallback.onResult(null, new Exception("Invalid result format"));
         }
     }

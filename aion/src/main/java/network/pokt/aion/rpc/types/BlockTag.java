@@ -2,6 +2,8 @@ package network.pokt.aion.rpc.types;
 
 import java.math.BigInteger;
 
+import network.pokt.aion.util.HexStringUtil;
+
 public class BlockTag {
 
     private BigInteger blockHeight;
@@ -31,7 +33,7 @@ public class BlockTag {
 
     public String getBlockTagString() {
         if(this.blockHeight != null) {
-            return this.blockHeight.toString(16);
+            return HexStringUtil.prependZeroX(this.blockHeight.toString(16));
         } else if(this.defaultBlock != null) {
             return this.defaultBlock.getTagString();
         }

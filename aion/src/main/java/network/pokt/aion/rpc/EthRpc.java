@@ -33,7 +33,7 @@ public class EthRpc {
     private enum AionRpcMethod {
         eth_protocolVersion,
         eth_syncing,
-        eth_nrgPrice,
+        eth_gasPrice,
         eth_blockNumber,
         eth_getBalance,
         eth_getStorageAt,
@@ -49,8 +49,7 @@ public class EthRpc {
         eth_getTransactionByBlockHashAndIndex,
         eth_getTransactionByBlockNumberAndIndex,
         eth_getTransactionReceipt,
-        eth_getLogs,
-        eth_getProof
+        eth_getLogs
     }
 
     // Public interface
@@ -72,7 +71,7 @@ public class EthRpc {
 
     public void nrgPrice(@NotNull String subnetwork, @NotNull final RPCCallback<BigInteger>
             callback) throws CreateQueryException {
-        Query query = this.createQuery(subnetwork, AionRpcMethod.eth_nrgPrice, new ArrayList());
+        Query query = this.createQuery(subnetwork, AionRpcMethod.eth_gasPrice, new ArrayList());
         this.pocketAion.executeQueryAsync(new BigIntegerCallback(query, callback));
     }
 
@@ -254,18 +253,6 @@ public class EthRpc {
         rpcParams.add(queryParams);
         Query query = this.createQuery(subnetwork, AionRpcMethod.eth_getLogs, rpcParams);
         this.pocketAion.executeQueryAsync(new ObjectListCallback(query, callback));
-    }
-
-    public void getProof(@NotNull String subnetwork, @NotNull String address, @NotNull
-            List<String> storageKeys, BlockTag blockTag, @NotNull final RPCCallback<JSONObject>
-            callback) throws CreateQueryException {
-        blockTag = BlockTag.tagOrLatest(blockTag);
-        List rpcParams = new ArrayList();
-        rpcParams.add(address);
-        rpcParams.add(storageKeys);
-        rpcParams.add(blockTag);
-        Query query = this.createQuery(subnetwork, AionRpcMethod.eth_getProof, rpcParams);
-        this.pocketAion.executeQueryAsync(new ObjectCallback(query, callback));
     }
 
     // Private interfaces

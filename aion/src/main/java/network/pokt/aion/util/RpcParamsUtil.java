@@ -46,7 +46,7 @@ public class RpcParamsUtil {
         } else if (objParam instanceof String) {
             currStr = "\"" + objParam + "\"";
         } else if(objParam instanceof BigInteger) {
-            currStr = "\"" + HexStringUtil.prependZeroX(((BigInteger)objParam).toString(16)) + "\"";
+            currStr = "BigInt(" + "\"" + HexStringUtil.prependZeroX(((BigInteger)objParam).toString(16)) + "\"" + ")";
         }
         return currStr;
     }
