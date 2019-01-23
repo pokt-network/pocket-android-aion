@@ -1,5 +1,7 @@
 package network.pokt.aion.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -11,15 +13,20 @@ public class TestConfiguration implements Configuration {
 
 
     MockWebServer server;
+    URL serverURL;
 
-    public TestConfiguration(Dispatcher dispatcher) {
+    public TestConfiguration(@NotNull URL serverURL) {
+        this.serverURL = serverURL;
+    }
+
+    public TestConfiguration(Dispatcher dispatcher) throws MalformedURLException{
         this.server = new MockWebServer();
         server.setDispatcher(dispatcher);
+        this.serverURL = new URL(server.url("/").toString());
     }
 
     @Override
     public URL getNodeUrl() throws MalformedURLException {
-        String serverURL = server.url("/").toString();
-        return new URL(serverURL);
+        return this.serverURL;
     }
 }

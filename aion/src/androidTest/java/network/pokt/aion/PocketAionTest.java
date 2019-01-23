@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,6 +57,8 @@ public class PocketAionTest {
             assertTrue(this.pocketAion != null);
         } catch (InvalidConfigurationException e) {
             throw e;
+        } catch (MalformedURLException murle) {
+            murle.printStackTrace();
         }
     }
 

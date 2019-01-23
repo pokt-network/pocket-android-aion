@@ -8,10 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.Semaphore;
 
 import network.pokt.aion.rpc.callbacks.RPCCallback;
-import network.pokt.aion.util.RpcMockDispatcher;
 import network.pokt.aion.util.SemaphoreUtil;
 import network.pokt.aion.util.TestConfiguration;
 import network.pokt.pocketsdk.exceptions.CreateQueryException;
@@ -27,15 +28,33 @@ public class NetRpcTest {
     PocketAion pocketAion;
     static final String MASTERY_SUBNETWORK = "32";
 
+    // To use the mock tests, uncomment this constructor
+//    public NetRpcTest() {
+//        // Context of the app under test.
+//        Context appContext = InstrumentationRegistry.getTargetContext();
+//
+//        try {
+//            pocketAion = new PocketAion(new TestConfiguration(new RpcMockDispatcher(appContext, 4)), appContext);
+//            assertNotNull(pocketAion);
+//        } catch (InvalidConfigurationException e) {
+//            e.printStackTrace();
+//        } catch (MalformedURLException murle) {
+//            murle.printStackTrace();
+//        }
+//    }
+
+    // To use the mastery server uncomment this constructor
     public NetRpcTest() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         try {
-            pocketAion = new PocketAion(new TestConfiguration(new RpcMockDispatcher(appContext, 4)), appContext);
+            pocketAion = new PocketAion(new TestConfiguration(new URL("https://aion.pokt.network")), appContext);
             assertNotNull(pocketAion);
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
+        } catch (MalformedURLException murle) {
+            murle.printStackTrace();
         }
     }
 
@@ -48,7 +67,7 @@ public class NetRpcTest {
                     pocketAion.net.version(MASTERY_SUBNETWORK, new RPCCallback<String>() {
                         @Override
                         public void onResult(String result, Exception exception) {
-                            assertEquals(result, "0");
+                            assertEquals(result, MASTERY_SUBNETWORK);
                             assertNull(exception);
                             semaphore.release();
                         }
