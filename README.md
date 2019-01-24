@@ -17,7 +17,7 @@ First add the following to your root `build.gradle`:
 
 Add the following to your Gradle file `dependencies` closure:
 
-`implementation 'com.github.pokt-network:pocket-android-aion:0.0.2'`
+`implementation 'com.github.pokt-network:pocket-android-aion:0.0.3'`
 
 ***Optional***
 
