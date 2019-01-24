@@ -62,6 +62,10 @@ public class AionContract {
         }
     }
 
+    public PocketAion getPocketAion() {
+        return pocketAion;
+    }
+
     // Private interface
     private void sendTransaction(@NotNull Wallet wallet, @NotNull BigInteger nonce, @NotNull BigInteger nrg, @NotNull BigInteger nrgPrice, @NotNull BigInteger value, @NotNull String data, @NotNull final RPCCallback<String> callback) throws CreateTransactionException {
         this.pocketAion.eth.sendTransaction(this.subnetwork, wallet, this.contractAddress, nrg, nrgPrice, value, data, nonce, callback);

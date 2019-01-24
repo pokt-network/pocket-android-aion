@@ -507,6 +507,7 @@ public class EthRpcTest {
                                 });
                             } catch (CreateTransactionException cte) {
                                 cte.printStackTrace();
+                                semaphore.release();
                             }
                         }
                     });
