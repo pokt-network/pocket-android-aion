@@ -1,3 +1,6 @@
+# NOTE:
+This repository has been deprecated, please visit the [PocketAndroid repository for the latest on Pocket Android client development.](https://github.com/pokt-network/pocket-android)
+
 # Pocket Android AION Plugin
 AION Android Plugin to connect to any AION compatible Pocket Node. 
 For more information about Pocket Node, you can check out the repo [here](https://github.com/pokt-network/pocket-node).
